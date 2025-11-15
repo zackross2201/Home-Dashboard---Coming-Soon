@@ -1,98 +1,401 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>My Dashboard</title>
-  <style>
-    :root {
-      --bg: #0e1116;
-      --panel: #151a22;
-      --text: #e6ebf2;
-      --accent: #5eb2ff;
-      --muted: #96a2b4;
-      --radius: 12px;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Dashboard</title>
+    <style>
+        /* --- Global Styles --- */
+        :root {
+            --bg-color: #121212;
+            --widget-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --primary-color: #03a9f4; /* A bright blue for accents */
+            --border-radius: 15px;
+            --widget-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
 
-    * { box-sizing: border-box; margin: 0; padding: 0 }
-    body {
-      font-family: Inter, system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    header {
-      background: var(--panel);
-      padding: 16px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 20px;
+        }
 
-    header h1 {
-      font-size: 20px;
-      color: var(--accent);
-    }
+        h1, h2, h3 {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
 
-    nav {
-      display: flex;
-      gap: 16px;
-    }
+        /* --- Dashboard Grid Layout --- */
+        .dashboard-container {
+            display: grid;
+            /* This is the "advanced" part:
+               It creates columns that are at least 350px wide,
+               but will stretch to fill available space (1fr).
+               'auto-fit' adds as many columns as can fit.
+            */
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
 
-    nav a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 14px;
-      transition: color 0.2s ease;
-    }
+        /* --- Base Widget Style --- */
+        .widget {
+            background-color: var(--widget-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--widget-shadow);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Ensures content respects border-radius */
+        }
 
-    nav a:hover {
-      color: var(--accent);
-    }
+        /* --- Specific Widget Styles & Grid Spanning --- */
 
-    main {
-      flex: 1;
-      display: grid;
-      place-items: center;
-      padding: 40px;
-      text-align: center;
-    }
+        /* 1. Greeting Widget (Big) */
+        .greeting-widget {
+            /* This widget spans 2 columns */
+            grid-column: span 2;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-color), #01579b);
+        }
+        .greeting-widget h1 {
+            font-size: 2.8rem;
+            margin: 0;
+        }
+        .greeting-widget p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
 
-    .coming-soon {
-      font-size: clamp(24px, 5vw, 36px);
-      font-weight: 600;
-      color: var(--accent);
-    }
+        /* 2. Clock Widget */
+        .clock-widget {
+            text-align: center;
+            justify-content: center;
+        }
+        #time {
+            font-size: 4rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--primary-color);
+        }
+        #date {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
 
-    footer {
-      background: var(--panel);
-      padding: 12px 24px;
-      text-align: center;
-      font-size: 13px;
-      color: var(--muted);
-    }
-  </style>
+        /* 3. Quick Links Widget */
+        .links-widget ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .links-widget a {
+            display: block;
+            text-decoration: none;
+            color: var(--text-color);
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+        }
+        .links-widget a:hover {
+            background-color: var(--primary-color);
+            color: var(--widget-bg);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 4. To-Do List Widget (Tall) */
+        .todo-widget {
+            /* This widget spans 2 rows */
+            grid-row: span 2;
+            display: flex;
+            flex-direction: column;
+        }
+        .todo-widget #todo-list {
+            list-style: none;
+            flex-grow: 1; /* Makes the list fill the available space */
+            overflow-y: auto; /* Adds scrolling if list is too long */
+            margin-top: 15px;
+        }
+        .todo-widget li {
+            font-size: 1rem;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        .todo-widget li.completed {
+            text-decoration: line-through;
+            opacity: 0.5;
+        }
+        .todo-widget .delete-btn {
+            background: none;
+            border: none;
+            color: #ff5252;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.2s;
+        }
+        .todo-widget li:hover .delete-btn {
+            opacity: 1;
+        }
+        .todo-input-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        #todo-input {
+            flex-grow: 1;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px;
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+        #add-todo-btn {
+            border: none;
+            background-color: var(--primary-color);
+            color: #ffffff;
+            padding: 0 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        #add-todo-btn:hover {
+            background-color: #0288d1;
+        }
+
+        /* 5. Weather Widget (Placeholder) */
+        .weather-widget {
+            text-align: center;
+            justify-content: center;
+        }
+        .weather-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+        .temperature {
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+        .weather-desc {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+        .weather-widget small {
+            margin-top: 15px;
+            display: block;
+            opacity: 0.5;
+        }
+
+        /* 6. Notes Widget */
+        .notes-widget {
+            display: flex;
+            flex-direction: column;
+        }
+        #notes-area {
+            flex-grow: 1; /* Makes it fill the widget */
+            min-height: 150px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            color: var(--text-color);
+            font-size: 1rem;
+            line-height: 1.6;
+            border: none;
+            outline: none; /* Removes focus ring */
+            resize: none; /* Disables manual resize */
+        }
+
+
+        /* --- Responsive Adjustments --- */
+        @media (max-width: 800px) {
+            /* On smaller screens, make all widgets span 1 column */
+            .greeting-widget {
+                grid-column: span 1;
+            }
+            .todo-widget {
+                grid-row: span 1;
+            }
+        }
+
+    </style>
 </head>
 <body>
-  <header>
-    <h1>My Dashboard</h1>
-    <nav>
-      <a href="#">Home</a>
-      <a href="#">Features</a>
-      <a href="#">Contact</a>
-    </nav>
-  </header>
 
-  <main>
-    <div class="coming-soon">Coming soon…</div>
-  </main>
+    <main class="dashboard-container">
 
-  <footer>
-    &copy; 2025 Zack Labs. All rights reserved.
-  </footer>
+        <div class="widget greeting-widget">
+            <h1 id="greeting">Good Morning!</h1>
+            <p>Welcome to your personal dashboard.</p>
+        </div>
+
+        <div class="widget clock-widget">
+            <div id="time">12:00:00</div>
+            <div id="date">Saturday, 15 November</div>
+        </div>
+
+        <div class="widget todo-widget">
+            <h3>My To-Do List</h3>
+            <ul id="todo-list">
+                </ul>
+            <div class="todo-input-container">
+                <input type="text" id="todo-input" placeholder="Add a new task...">
+                <button id="add-todo-btn">Add</button>
+            </div>
+        </div>
+
+        <div class="widget links-widget">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="https://google.com" target="_blank">Google</a></li>
+                <li><a href="https://youtube.com" target="_blank">YouTube</a></li>
+                <li><a href="https://reddit.com" target="_blank">Reddit</a></li>
+                <li><a href="https://github.com" target="_blank">GitHub</a></li>
+                <li><a href="https://gmail.com" target="_blank">Gmail</a></li>
+                <li><a href="https://news.google.com" target="_blank">News</a></li>
+            </ul>
+        </div>
+        
+        <div class="widget weather-widget">
+            <h3>Current Weather</h3>
+            <div class="weather-icon">☀️</div>
+            <div class="temperature">14°C</div>
+            <div class="weather-desc">Sunny</div>
+            <small>(This is a static placeholder. Real weather needs an API.)</small>
+        </div>
+
+        <div class="widget notes-widget">
+            <h3>Quick Notes</h3>
+            <textarea id="notes-area" placeholder="Type your notes here..."></textarea>
+        </div>
+
+    </main>
+
+    <script>
+        // Wait for the DOM to be fully loaded before running scripts
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- 1. Clock and Date ---
+            const timeEl = document.getElementById('time');
+            const dateEl = document.getElementById('date');
+
+            function updateTime() {
+                const now = new Date();
+                
+                // Format time as HH:MM:SS
+                const timeString = now.toLocaleTimeString('en-GB');
+                
+                // Format date as "Saturday, 15 November"
+                const dateOptions = { weekday: 'long', day: 'numeric', month: 'long' };
+                const dateString = now.toLocaleDateString('en-GB', dateOptions);
+
+                timeEl.textContent = timeString;
+                dateEl.textContent = dateString;
+            }
+
+            // --- 2. Greeting ---
+            const greetingEl = document.getElementById('greeting');
+
+            function updateGreeting() {
+                const hour = new Date().getHours();
+                if (hour < 12) {
+                    greetingEl.textContent = 'Good Morning!';
+                } else if (hour < 18) {
+                    greetingEl.textContent = 'Good Afternoon!';
+                } else {
+                    greetingEl.textContent = 'Good Evening!';
+                }
+            }
+
+            // --- 3. To-Do List ---
+            const todoList = document.getElementById('todo-list');
+            const todoInput = document.getElementById('todo-input');
+            const addTodoBtn = document.getElementById('add-todo-btn');
+
+            function addTask() {
+                const taskText = todoInput.value.trim();
+                
+                if (taskText === "") {
+                    return; // Don't add empty tasks
+                }
+
+                // Create list item
+                const li = document.createElement('li');
+                
+                // Create text span
+                const taskSpan = document.createElement('span');
+                taskSpan.textContent = taskText;
+                
+                // Add click listener to toggle 'completed' class
+                taskSpan.addEventListener('click', () => {
+                    li.classList.toggle('completed');
+                });
+
+                // Create delete button
+                const deleteBtn = document.createElement('button');
+                deleteBtn.textContent = '×';
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.addEventListener('click', () => {
+                    todoList.removeChild(li);
+                });
+                
+                // Assemble and add to list
+                li.appendChild(taskSpan);
+                li.appendChild(deleteBtn);
+                todoList.appendChild(li);
+
+                // Clear input
+                todoInput.value = "";
+            }
+
+            // Add task on button click
+            addTodoBtn.addEventListener('click', addTask);
+            
+            // Add task on pressing 'Enter'
+            todoInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    addTask();
+                }
+            });
+
+            // --- 4. Notes Widget ---
+            const notesArea = document.getElementById('notes-area');
+            
+            // Load saved notes from localStorage
+            if (localStorage.getItem('dashboardNotes')) {
+                notesArea.value = localStorage.getItem('dashboardNotes');
+            }
+
+            // Save notes to localStorage on input
+            notesArea.addEventListener('input', () => {
+                localStorage.setItem('dashboardNotes', notesArea.value);
+            });
+
+
+            // --- Initializations ---
+            updateTime(); // Run once immediately
+            setInterval(updateTime, 1000); // Update time every second
+            updateGreeting(); // Run greeting once
+
+        });
+    </script>
+
 </body>
 </html>
